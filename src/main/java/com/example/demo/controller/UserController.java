@@ -1,0 +1,159 @@
+package com.example.demo.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.example.demo.entity.User;
+import com.example.demo.service.EmailService;
+import com.example.demo.service.EventService;
+
+@Controller
+public class UserController {
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+
+	@Autowired
+	EventService es;
+
+	@Autowired
+	EmailService em;
+	
+	@Autowired
+	BCryptPasswordEncoder bcrypt;
+
+	@RequestMapping("/")
+	public String welcome(Map<String, Object> model) {
+		return "home";
+	}
+
+	@RequestMapping("logout1")
+	public void logout(Map<String, Object> model) {
+		System.exit(0);
+		//return "home";
+	}
+
+	@RequestMapping("/register")
+	public String register(Model model) {
+		User user = new User();
+		model.addAttribute("user", user);
+		return "register";
+	}
+
+	@RequestMapping("processregister")
+	public String processRegister(@ModelAttribute(value = "user") User user) {
+		user.setPassword(bcrypt.encode(user.getPassword()));
+		es.save(user);
+		return "home";
+	}
+
+	@RequestMapping("/login")
+	public String signin(HttpSession session,HttpServletRequest request) {
+		session=request.getSession(false);
+		if (session.getAttribute("email") != null) {
+			return "redirect:/";
+		}
+		return "login";
+	}
+	
+	@RequestMapping("processsignin")
+	public String processSignin(HttpServletRequest request, HttpSession session) {
+		String email = request.getParameter("email");
+		String password = request.getParameter("password");
+		List<User> list = es.findemail(email);
+		if (list.isEmpty())
+			return "redirect:/signin";
+		else {
+			if(bcrypt.matches(password, list.get(0).getPassword())) {
+				session = request.getSession();
+				session.setAttribute("email", email);
+				return "redirect:/";
+			}
+			else
+				return "register";
+			}
+		}
+	
+	@RequestMapping("/resetpassword")
+	public String resetpassword(HttpServletRequest request,HttpSession session) {
+			return "resetpassword";
+	}
+
+	@RequestMapping("/reset")
+	public String reset(HttpServletRequest request) {
+		String email = request.getParameter("email");
+		List<User> list = es.findemail(email);
+		if (list.isEmpty()) {
+			return "redirect:/resetpassword";
+		}
+		String token = list.get(0).getToken();
+		em.sendMail(email, token);
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/updatepassword", method = RequestMethod.GET)
+	public String reset2(@RequestParam(value = "token") String token, Model model, HttpServletRequest request) {
+		List<User> list = es.findtoken(token);
+		System.out.println(token);
+		if (list.isEmpty()) {
+			return "redirect:/";
+		} else {
+			model.addAttribute("token", token);
+			return "updatepassword";
+		}
+	}
+
+	@RequestMapping(value = "/updatepassword", method = RequestMethod.POST)
+	public String reset3(Model model, HttpServletRequest request) {
+
+		String pass = request.getParameter("password");
+		String cpass = request.getParameter("cpassword");
+		String token = request.getParameter("token");
+
+		if (pass.equals(cpass)) {
+			List<User> list = es.findtoken(token);
+			User user = list.get(0);
+			bcrypt.encode(pass);
+			user.setPassword(pass);
+			es.save(user);
+			return "redirect:/";
+		} else
+			return "updatepassword";
+	}
+
+
+	
+	
+	
+	/*
+	 * @Autowired private Facebook facebook;
+	 * 
+	 * @RequestMapping(value="/facebooksignin") public String helloFacebook(Model
+	 * model) {
+	 * 
+	 * return "redirect:/connect/facebook";
+	 * 
+	 * 
+	 * model.addAttribute(facebook.userOperations().getUserProfile()); PagedList
+	 * homeFeed = facebook.feedOperations().getHomeFeed();
+	 * model.addAttribute("feed", homeFeed);
+	 * 
+	 * return "home"; }
+	 */
+
+}

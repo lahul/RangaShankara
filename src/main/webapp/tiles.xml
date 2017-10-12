@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+	<!-- Templates -->
+
+	<definition name="layout.basic" template="/layout/basic.jsp">
+
+		<put-attribute name="header" value="/jsp/header.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/jsp/footer.jsp" />
+	</definition>
+
+	<!-- Pages -->
+
+	<definition name="home" extends="layout.basic">
+		<put-attribute name="body" value="/jsp/home.jsp" />
+	</definition>
+
+	<definition name="login" extends="layout.basic">
+		<put-attribute name="body" value="/jsp/login.jsp" />
+	</definition>
+
+	<definition name="register" extends="layout.basic">
+		<put-attribute name="body" value="/jsp/register.jsp" />
+	</definition>
+
+	<definition name="resetpassword" extends="layout.basic">
+		<put-attribute name="body" value="/jsp/resetpassword.jsp" />
+	</definition>
+
+	<definition name="updatepassword" extends="layout.basic">
+		<put-attribute name="body" value="/jsp/updatepassword.jsp" />
+	</definition>
+
+	<definition name="events" extends="layout.basic">
+		<put-attribute name="body" value="/jsp/events.jsp" />
+	</definition>
+	
+	<definition name="eventdetail" extends="layout.basic">
+		<put-attribute name="body" value="/jsp/eventdetail.jsp" />
+	</definition>
+	
+	<definition name="addevent" extends="layout.basic">
+		<put-attribute name="body" value="/jsp/addevent.jsp" />
+	</definition>
+
+	<definition name="editevent" extends="layout.basic">
+		<put-attribute name="body" value="/jsp/editevent.jsp" />
+	</definition>
+</tiles-definitions>
