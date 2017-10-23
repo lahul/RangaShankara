@@ -8,46 +8,60 @@
 
 	<definition name="layout.basic" template="/layout/basic.jsp">
 
-		<put-attribute name="header" value="/jsp/header.jsp" />
+		<put-attribute name="header" value="/views/jsp/header.jsp" />
 		<put-attribute name="body" value="" />
-		<put-attribute name="footer" value="/jsp/footer.jsp" />
+		<put-attribute name="footer" value="/views/jsp/footer.jsp" />
 	</definition>
 
 	<!-- Pages -->
 
-	<definition name="home" extends="layout.basic">
-		<put-attribute name="body" value="/jsp/home.jsp" />
+	<definition name="home" extends="layout.basic" >
+		<put-attribute name="body" value="/views/jsp/home.jsp" />
+	</definition>
+	
+		<definition name="facebookConnect" extends="layout.basic" >
+		<put-attribute name="body" value="/views/jsp/facebookConnect.jsp" />
+	</definition>
+
+			<definition name="hello" extends="layout.basic" >
+		<put-attribute name="body" value="/views/jsp/hello.jsp" />
 	</definition>
 
 	<definition name="login" extends="layout.basic">
-		<put-attribute name="body" value="/jsp/login.jsp" />
+		<put-attribute name="body" value="/views/jsp/login.jsp" />
 	</definition>
 
 	<definition name="register" extends="layout.basic">
-		<put-attribute name="body" value="/jsp/register.jsp" />
+		<put-attribute name="body" value="/views/jsp/register.jsp" />
 	</definition>
 
 	<definition name="resetpassword" extends="layout.basic">
-		<put-attribute name="body" value="/jsp/resetpassword.jsp" />
+		<put-attribute name="body" value="/views/jsp/resetpassword.jsp" />
 	</definition>
 
 	<definition name="updatepassword" extends="layout.basic">
-		<put-attribute name="body" value="/jsp/updatepassword.jsp" />
+		<put-attribute name="body" value="/views/jsp/updatepassword.jsp" />
 	</definition>
 
 	<definition name="events" extends="layout.basic">
-		<put-attribute name="body" value="/jsp/events.jsp" />
+		<put-attribute name="body" value="/views/jsp/events.jsp" />
 	</definition>
-	
+
 	<definition name="eventdetail" extends="layout.basic">
-		<put-attribute name="body" value="/jsp/eventdetail.jsp" />
+		<put-attribute name="body" value="/views/jsp/eventdetail.jsp" />
 	</definition>
-	
+
 	<definition name="addevent" extends="layout.basic">
-		<put-attribute name="body" value="/jsp/addevent.jsp" />
+		<put-attribute name="body" value="/views/jsp/addevent.jsp" />
 	</definition>
 
 	<definition name="editevent" extends="layout.basic">
-		<put-attribute name="body" value="/jsp/editevent.jsp" />
+		<put-attribute name="body" value="/views/jsp/editevent.jsp" />
+	</definition>
+	
+	
+	
+	<definition name="userhome" extends="layout.basic" >
+		<put-attribute name="body" value="/views/jsp/userhome.jsp" />
 	</definition>
 </tiles-definitions>

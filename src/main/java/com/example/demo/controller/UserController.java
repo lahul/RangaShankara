@@ -26,26 +26,33 @@ public class UserController {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
-
 	@Autowired
 	EventService es;
 
 	@Autowired
 	EmailService em;
-	
+
 	@Autowired
 	BCryptPasswordEncoder bcrypt;
 
 	@RequestMapping("/")
-	public String welcome(Map<String, Object> model) {
+	public String home(HttpSession session, Model model) {
+		if (session.getAttribute("email") == null) {
+			model.addAttribute("status", "no");
 		return "home";
-	}
-
-	@RequestMapping("logout1")
-	public void logout(Map<String, Object> model) {
-		System.exit(0);
-		//return "home";
+		}else{
+		model.addAttribute("status", "yes");
+		return "home";
+		}
+}
+	@RequestMapping("/signout")
+	public String logout(HttpServletRequest request, HttpSession session) {
+		session = request.getSession(false);
+		if (session.getAttribute("email") == null) {
+			return "redirect:/login";
+		}
+		session.invalidate();
+		return "redirect:/";
 	}
 
 	@RequestMapping("/register")
@@ -56,21 +63,28 @@ public class UserController {
 	}
 
 	@RequestMapping("processregister")
-	public String processRegister(@ModelAttribute(value = "user") User user) {
-		user.setPassword(bcrypt.encode(user.getPassword()));
+	public String processRegister(@ModelAttribute(value = "user") User user, HttpServletRequest request) {
+		String cpassword = request.getParameter("cpassword");
+		System.out.println(cpassword);
+		System.out.println(user.getPassword());
+		if (cpassword.equals(user.getPassword())) {
+			user.setPassword(bcrypt.encode(user.getPassword()));
+		} else {
+			return "redirect:/register";
+		}
 		es.save(user);
-		return "home";
+		return "redirect:/login";
 	}
 
 	@RequestMapping("/login")
-	public String signin(HttpSession session,HttpServletRequest request) {
-		session=request.getSession(false);
+	public String signin(HttpSession session, HttpServletRequest request) {
+		session = request.getSession(false);
 		if (session.getAttribute("email") != null) {
 			return "redirect:/";
 		}
 		return "login";
 	}
-	
+
 	@RequestMapping("processsignin")
 	public String processSignin(HttpServletRequest request, HttpSession session) {
 		String email = request.getParameter("email");
@@ -79,19 +93,18 @@ public class UserController {
 		if (list.isEmpty())
 			return "redirect:/signin";
 		else {
-			if(bcrypt.matches(password, list.get(0).getPassword())) {
+			if (bcrypt.matches(password, list.get(0).getPassword())) {
 				session = request.getSession();
 				session.setAttribute("email", email);
 				return "redirect:/";
-			}
-			else
+			} else
 				return "register";
-			}
 		}
-	
+	}
+
 	@RequestMapping("/resetpassword")
-	public String resetpassword(HttpServletRequest request,HttpSession session) {
-			return "resetpassword";
+	public String resetpassword(HttpServletRequest request, HttpSession session) {
+		return "resetpassword";
 	}
 
 	@RequestMapping("/reset")
@@ -136,10 +149,6 @@ public class UserController {
 			return "updatepassword";
 	}
 
-
-	
-	
-	
 	/*
 	 * @Autowired private Facebook facebook;
 	 * 

@@ -1,4 +1,5 @@
 function validateForm() {
+	
 
 	var firstName = document.getElementById("first_name")
 	var lastName = document.getElementById("last_name")
@@ -56,6 +57,7 @@ function validateForm() {
 		alert("Phone Number should be a number");
 		return false;
 	}
+	
 
 }
 
@@ -79,5 +81,96 @@ function validateLogin() {
 		alert("Password must be filled out");
 		return false;
 	
+	}
+}
+
+
+function validateaddevent() {
+	var eventName = document.getElementById("eventName")
+	var rating = document.getElementById("rating")
+	var price=document.getElementById("price")
+	var eventDescription=document.getElementById("eventDescription")
+	var eventTime=document.getElementById("eventTime")
+	
+	var regex1 = /^[0-9]+$/;
+	var regex2 = /^[1-5]$/;
+
+	if (!(eventName.value && eventName)) {
+		alert("Event Name must be filled out");
+		return false;
+	}
+	
+	if (!(rating.value && rating)) {
+		alert("Rating must be filled out");
+		return false;
+	}
+	
+	if (!rating.value.match(regex2)) {
+		alert("Rating must be a number[1-5]");
+		return false;
+	}
+	
+	if (!(price.value && price)) {
+		alert("Price must be filled out");
+		return false;
+	}
+	
+	if (!price.value.match(regex1)) {
+		alert("Price must be a number");
+		return false;
+	}
+	
+	if (!(eventDescription.value && eventDescription)) {
+		alert("Event Description must be filled out");
+		return false;
+	}
+	if (!(eventTime.value && eventTime)) {
+		alert("Event Time must be filled out");
+		return false;
+	}
+}
+
+function validateeditevent() {
+	var eventName = document.getElementById("eventName")
+	var rating = document.getElementById("rating")
+	var price=document.getElementById("price")
+	var eventDescription=document.getElementById("eventDescription")
+	var eventTime=document.getElementById("eventTime")
+	
+	var regex1 = /^[0-9]+$/;
+	var regex2 = /^[1-5]$/;
+
+	if (!(eventName.value && eventName)) {
+		alert("Event Name must be filled out");
+		return false;
+	}
+	
+	if (!(rating.value && rating)) {
+		alert("Rating must be filled out");
+		return false;
+	}
+	
+	if (!rating.value.match(regex2)) {
+		alert("Rating must be a number[1-5]");
+		return false;
+	}
+	
+	if (!(price.value && price)) {
+		alert("Price must be filled out");
+		return false;
+	}
+	
+	if (!price.value.match(regex1)) {
+		alert("Price must be a number");
+		return false;
+	}
+	
+	if (!(eventDescription.value && eventDescription)) {
+		alert("Event Description must be filled out");
+		return false;
+	}
+	if (!(eventTime.value && eventTime)) {
+		alert("Event Time must be filled out");
+		return false;
 	}
 }

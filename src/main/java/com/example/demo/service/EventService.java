@@ -1,5 +1,11 @@
 package com.example.demo.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,6 +14,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.servlet.ServletContext;
+import javax.servlet.http.Part;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -24,6 +32,9 @@ import com.example.demo.repository.UserHib;
 @Transactional
 public class EventService<CustomObject> {
 
+	@Autowired
+	ServletContext context;
+	
 	@Autowired
 	UserHib uh;
 
@@ -82,9 +93,9 @@ public class EventService<CustomObject> {
 	public void delete(Events event) {
 		eh.delete(event);
 	}
-	
-	public List<Events> findbyuser(User user){
-		List<Events> events=eh.findByUser(user);
+
+	public List<Events> findbyuser(User user) {
+		List<Events> events = eh.findByUser(user);
 		return events;
 	}
 	/*
@@ -105,8 +116,25 @@ public class EventService<CustomObject> {
 	 * TypedQuery<User> query=entityManager.createQuery(cq); List<User>
 	 * list=query.getResultList(); System.out.println(list); }
 	 */
-}
 
+	public String copyfile(Part file) throws IOException {
+		String filename=Paths.get(file.getSubmittedFileName()).getFileName().toString();
+		InputStream filecontent=file.getInputStream();
+		String curdir=System.getProperty("user.dir");
+		System.out.println(curdir);
+		//File newfile=new File("C:\\Users\\LAHUL\\Documents\\files\\"+filename);
+		
+		File newfile=new File("src/main/webapp/assets/images/"+filename);
+		newfile.createNewFile();
+		OutputStream outputStream =new FileOutputStream(newfile);
+		   int read = 0;  
+		   byte[] bytes = new byte[1024];  
+		   while ((read = filecontent.read(bytes)) != -1) {  
+			    outputStream.write(bytes, 0, read);  
+			   } 
+		return filename;
+}
+}
 /*
  * public List<Events> find(String eventName){ String query =
  * "SELECT NEW com.example.demo.entity.Events(e.eventName, e.eventDescription) FROM Events e"

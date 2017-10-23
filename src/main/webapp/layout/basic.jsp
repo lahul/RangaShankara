@@ -54,7 +54,8 @@
 <script type="text/javascript" src="assets/js/icheck.min.js"></script>
 <script type="text/javascript" src="assets/js/owl.carousel.min.js"></script>
 <script type="text/javascript" src="assets/js/jquery.nouislider.all.min.js"></script>
-
+<script type="text/javascript" src=jquery.geocomplete.js"></script>
+<script type="text/javascript" src="assets/js/locationpicker.jquery.js"></script>
 <script type="text/javascript" src="assets/js/custom.js"></script>
 <script type="text/javascript" src="assets/js/maps.js"></script>
 <script type="text/javascript" src="assets/js/formvalidator.js"></script>

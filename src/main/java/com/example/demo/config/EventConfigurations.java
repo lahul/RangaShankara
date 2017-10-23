@@ -24,6 +24,10 @@ public class EventConfigurations {
      * 
      * @return tiles configurer
      */
+	
+	
+	
+	
     @Bean
     public TilesConfigurer tilesConfigurer() {
         final TilesConfigurer configurer = new TilesConfigurer();

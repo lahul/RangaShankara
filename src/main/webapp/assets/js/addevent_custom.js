@@ -9,3 +9,4 @@ $('.form_datetime').datetimepicker({
 	forceParse: 0,
     showMeridian: 1
 });
+$("#geomap").geocomplete({ details: "form" });

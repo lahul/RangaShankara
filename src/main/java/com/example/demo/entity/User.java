@@ -22,7 +22,6 @@ public class User {
 	@Id
 	private int user_pk_id;
 	
-	
 	private String first_name;
 	
 	
@@ -50,6 +49,11 @@ public class User {
 	
 	@UpdateTimestamp
 	private Timestamp updateTime;
+	
+	
+	public int getUser_pk_id() {
+		return user_pk_id;
+	}
 	
 	public String getToken() {
 		return token;

@@ -19,6 +19,7 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 public class Events {
@@ -30,13 +31,24 @@ public class Events {
 	@Column(name="event_name")
 	private String eventName;
 	
-	@Column(name="event_time", columnDefinition="DATETIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private String eventTime;
 	
-	private int rating;
+	/*@Column(name="event_time", columnDefinition="DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)*/
+	private Date eventTime;
 	
-	private int price;
+	private Integer price;
+	
+	private String organizer;
+	
+	private String longitude;
+	
+	private String latitude;
+	
+	private String location;
+	
+	private String image;
+	
+	private Integer phoneNo;
 	
 	/*@CreationTimestamp
 	private Timestamp creationTime;
@@ -44,6 +56,26 @@ public class Events {
 	@UpdateTimestamp
 	private Timestamp updateTime;*/
 	
+	public int getEvent_pk_id() {
+		return event_pk_id;
+	}
+
+	public Integer getPhoneNo() {
+		return phoneNo;
+	}
+
+	public void setPhoneNo(Integer phoneNo) {
+		this.phoneNo = phoneNo;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
 	@Column(name="event_description")
 	private String eventDescription;
 	
@@ -66,23 +98,15 @@ public class Events {
 		this.eventDescription = eventDescription;
 	}
 
-	public int getRating() {
-		return rating;
-	}
 
-	public void setRating(int rating) {
-		this.rating = rating;
-	}
 
-	public int getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
-
-
 
 	public String getEventName() {
 		return eventName;
@@ -92,11 +116,11 @@ public class Events {
 		this.eventName = eventName;
 	}
 
-	public String getEventTime() {
+	public Date getEventTime() {
 		return eventTime;
 	}
 
-	public void setEventTime(String eventTime) {
+	public void setEventTime(Date eventTime) {
 		this.eventTime = eventTime;
 	}
 
@@ -111,11 +135,38 @@ public class Events {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
-	@Override
-	public String toString() {
-		return "Events [event_pk_id=" + event_pk_id + ", eventName=" + eventName + ", eventTime=" + eventTime
-				+ ", rating=" + rating + ", price=" + price + ", eventDescription=" + eventDescription + ", user="
-				+ user + "]";
+
+	public String getOrganizer() {
+		return organizer;
 	}
+
+	public void setOrganizer(String organizer) {
+		this.organizer = organizer;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+	
+
 }

@@ -1,20 +1,34 @@
 package com.example.demo.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+import javax.validation.Valid;
 
 import org.assertj.core.internal.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,11 +46,20 @@ public class EventController<CustomObject> {
 	@Autowired
 	EventService es;
 	
-
+	@InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm"); //yyyy-MM-dd'T'HH:mm:ssZ example
+        dateFormat.setLenient(false);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+    }
 	
-	@RequestMapping("/events")
-	public String events(Model model,HttpSession session,HttpServletRequest request) {
+	@RequestMapping(value="/events",method=RequestMethod.GET)
+	public String events(@RequestParam(value="page")Integer page,Model model,HttpSession session,HttpServletRequest request) {
+		int count=0,sizeofeventlist;
 		session=request.getSession(false);
+		count=0;
+		count=count*page;
+		int end=count+6;
 		if (session.getAttribute("email") == null) {
 			return "redirect:/login";
 		}
@@ -44,7 +67,18 @@ public class EventController<CustomObject> {
 		List<User> list=es.findemail(email);
 		User user=list.get(0);
 		List<Events> eventlist=es.findbyuser(user);
+		sizeofeventlist=eventlist.size();
+		if(sizeofeventlist%6==0) {
+			sizeofeventlist/=6;
+		}
+		else {
+			sizeofeventlist=(sizeofeventlist/6)+1;
+		}
 		model.addAttribute("list",eventlist);
+		model.addAttribute("page",page);
+		model.addAttribute("count",count);
+		model.addAttribute("end",end);
+		model.addAttribute("size",sizeofeventlist);
 		return "events";
 	}
 	
@@ -75,13 +109,21 @@ public class EventController<CustomObject> {
 	}
 	
 	@RequestMapping("processaddevent")
-	public String processaddevent(@ModelAttribute(value="event")Events event,Model model,HttpSession session) {
-		String email="abc@gmail.com"; //(String) session.getAttribute("email");
+	public String processaddevent(@ModelAttribute(value="event")@Valid Events event,@RequestParam(value="submit")String submit,BindingResult bindingResult,Model model,HttpSession session,HttpServletRequest request) throws IOException, ServletException {
+		if(submit.equals("submit")) {
+		String email=(String) session.getAttribute("email");
+		Part file=request.getPart("file");
+		String filename=es.copyfile(file);
+		event.setImage(filename);
+		logger.info("{}",bindingResult.toString());
 		User u=new User();
 		List list=es.findemail(email);
 		event.setUser((User) list.get(0));
 		es.save(event);
 		return "redirect:/";
+		}
+		else
+			return "redirect:/eventdetail";
 	}
 	
 	@RequestMapping(value="/editevent", method=RequestMethod.GET)
@@ -97,6 +139,7 @@ public class EventController<CustomObject> {
 		es.save(event);
 		return "redirect:events";
 	}
+	
 	@RequestMapping(value="/deleteevent", method=RequestMethod.GET)
 	public String deleteevent(@RequestParam(value="eventName")String eventName) {
 		List<Events> eventlist=es.findbyeventname(eventName);
