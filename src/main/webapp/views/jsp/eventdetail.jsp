@@ -19,7 +19,7 @@
                         <div class="subject-detail">
                             <div class="image">
                                 <div class="bg-transfer">
-                                    <img src="assets/images/${eventlist[0].image}" alt="">
+                                    <img src="/assets/images/${eventlist[0].image}" alt="">
                                 </div>
                             </div>
                             <div class="description">

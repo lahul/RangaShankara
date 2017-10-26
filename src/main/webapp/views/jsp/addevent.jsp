@@ -16,7 +16,7 @@
 						<div class="form-group">
 							<label for="event_name">Event Name</label>
 							<form:input type="text" class="form-control" path="eventName"
-								id="eventName" name="eventName" placeholder="Event name"></form:input>
+								id="eventName" name="eventName" placeholder="Event name" maxlength="250"></form:input>
 						</div>
 						<!--enr row-->
 						<div class="form-group">
@@ -55,8 +55,6 @@
 						<div class="form-group center">
 							<button type="submit" name="submit" id="submit" value="submit"
 								class="btn btn-primary btn-lg">Add Event</button>
-						</div>
-						<div class="form-group center">
 							<a href="/events" class="btn btn-primary btn-lg" style="padding-left: 22px; padding-right: 22px;" role="button">Cancel</a>
 						</div>
 						<!--end form-group-->

@@ -1,3 +1,5 @@
+'use strict';
+
 function validateForm() {
 	
 
@@ -174,10 +176,10 @@ function validateeditevent() {
 		return false;
 	}
 }
-function confirmDelete() { 
-	var status = confirm("Are you sure you want to delete?");   
-	if(status)
-	{
-	return true;
-	}
+
+	function confirmDelete() {
+	  var confirmDelete = confirm("Are you sure you want to delete?");
+	  if(confirmDelete){
+		  alert("calling delete")
+	  }
 	}

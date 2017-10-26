@@ -23,8 +23,8 @@
 									<div class="col-md-3 col-sm-6">
 										<div class="subject-list text-primary">
 
-											<a href="eventdetail?eventName=${item.eventName}"><img
-												src="assets/images/${item.image}" width="263" height="210"></a>
+											<a href="eventdetail/${item.eventName}"><img
+												src="/assets/images/${item.image}" width="263" height="210"></a>
 
 											<!--end image-->
 											<div class="description">
@@ -35,12 +35,12 @@
 													<c:choose>
 														<c:when test="${length > 10}">
 															<h3>
-																<a href="eventdetail?eventName=${eventName}">${fn:substring(eventName,0,10)}...</a>
+																<a href="eventdetail/${eventName}">${fn:substring(eventName,0,10)}...</a>
 															</h3>
 														</c:when>
 														<c:otherwise>
 															<h3>
-																<a href="eventdetail?eventName=${eventName}">${eventName}</a>
+																<a href="eventdetail/${eventName}">${eventName}</a>
 															</h3>
 														</c:otherwise>
 													</c:choose>
@@ -60,11 +60,11 @@
 												</section>
 												<!--end contacts-->
 												<section class="social">
-													<a class="btn btn-danger btn-xs amargin right active"
-														href="/deleteevent?eventName=${eventName}"><span
+													<a class="btn btn-danger btn-xs lmargin right active"
+														href="javascript:;" onclick="confirmDelete()" ><span
 														class="glyphicon glyphicon-trash"></span>&nbsp&nbsp&nbsp
 														Delete</a> <a class="btn btn-primary btn-xs right active"
-														href="/editevent?eventName=${eventName}" onclick="javascript:confirmDelete();"><span
+														href="/editevent?eventName=${eventName}" ><span
 														class="glyphicon glyphicon-edit"></span> &nbsp&nbsp&nbsp
 														Edit</a>
 													<div class="clear"></div>

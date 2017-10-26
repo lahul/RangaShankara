@@ -33,6 +33,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -105,8 +106,8 @@ public class EventController<CustomObject> {
 	 * 
 	 * 
 	 */
-	@RequestMapping(value="/eventdetail",method=RequestMethod.GET)
-	public String eventdetail(@RequestParam(value="eventName")String eventName,Model model) {
+	@RequestMapping(value="/eventdetail/{eventName}",method=RequestMethod.GET)
+	public String eventdetail(@PathVariable(value="eventName")String eventName,Model model) {
 		List<Events> eventlist=es.find();
 		List<User> userlist=new ArrayList<>();
 		User user=new User();
