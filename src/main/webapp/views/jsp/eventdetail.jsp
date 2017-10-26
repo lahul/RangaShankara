@@ -9,9 +9,9 @@
             <div class="row">
                 <div class="col-md-9 col-sm-9">
                     <section class="page-title">
-                                  
+                            
            
-           		<img src="assets/images/logo-3.png">
+           		
                         <h1>${eventlist[0].eventName}</h1>
                     </section>
                     <!--end section-title-->
@@ -25,8 +25,8 @@
                             <div class="description">
                                 <section class="name">
                                     <h3>${eventlist[0].eventName}</h3>
-                                    <h4>${eventlist[0].organizer}</h4>
-                                    <h5>${eventlist[0].eventDescription}</h5>
+                                    <h4>Organized By : ${eventlist[0].organizer}</h4>
+                                    <h5>Event Date : ${eventlist[0].eventDescription}</h5>
                                 </section>
                                 <!--end description-->
                                 <section class="contacts">

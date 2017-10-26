@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.mockito.internal.matchers.Find;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -36,5 +37,10 @@ public interface EventsHib extends CrudRepository<Events, String>{
 	
 	public Events save(Events event);
 	public void delete(Events event);
-	public List<Events> findByUser(User user);
+	
+	@Query("select count(e) from Events e")
+	public int CountEvents();
+	
+	@Query("Select e from Events e where e.user=?1")
+	public List<Events> findByUser(User user,Pageable pageable);
 }

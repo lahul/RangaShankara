@@ -35,6 +35,8 @@ public class UserController {
 	@Autowired
 	BCryptPasswordEncoder bcrypt;
 
+	/* Mapping to the home page */
+	
 	@RequestMapping("/")
 	public String home(HttpSession session, Model model) {
 		if (session.getAttribute("email") == null) {
@@ -44,7 +46,9 @@ public class UserController {
 		model.addAttribute("status", "yes");
 		return "home";
 		}
-}
+	}
+	
+	
 	@RequestMapping("/signout")
 	public String logout(HttpServletRequest request, HttpSession session) {
 		session = request.getSession(false);
@@ -55,6 +59,9 @@ public class UserController {
 		return "redirect:/";
 	}
 
+	/* Register page is displayed upon succesful registration user redirected to home
+	 * on unsuccessful attempt same page is displayed
+	 */
 	@RequestMapping("/register")
 	public String register(Model model) {
 		User user = new User();
@@ -76,6 +83,8 @@ public class UserController {
 		return "redirect:/login";
 	}
 
+	/*Mapping for the login page */
+	
 	@RequestMapping("/login")
 	public String signin(HttpSession session, HttpServletRequest request) {
 		session = request.getSession(false);
@@ -102,11 +111,15 @@ public class UserController {
 		}
 	}
 
+	/*Displays reset password page that asks for reset email */
+	
 	@RequestMapping("/resetpassword")
 	public String resetpassword(HttpServletRequest request, HttpSession session) {
 		return "resetpassword";
 	}
 
+	/*Displays a page to enter new password for password change */
+	
 	@RequestMapping("/reset")
 	public String reset(HttpServletRequest request) {
 		String email = request.getParameter("email");

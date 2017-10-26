@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import static org.mockito.Matchers.intThat;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,6 +49,8 @@ public class EventController<CustomObject> {
 	@Autowired
 	EventService es;
 	
+	/* changing the default format of the Date type to suit to datetime format*/
+	
 	@InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm"); //yyyy-MM-dd'T'HH:mm:ssZ example
@@ -53,35 +58,53 @@ public class EventController<CustomObject> {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
     }
 	
+	/*Mapping for the events page it will display the events for the particular user
+	 * if user is not logged in then login page is shown
+	 */
+	
 	@RequestMapping(value="/events",method=RequestMethod.GET)
-	public String events(@RequestParam(value="page")Integer page,Model model,HttpSession session,HttpServletRequest request) {
-		int count=0,sizeofeventlist;
+	public String events(@RequestParam(value="page",defaultValue="0")Integer page,Model model,HttpSession session,HttpServletRequest request) {
 		session=request.getSession(false);
-		count=0;
-		count=count*page;
-		int end=count+6;
 		if (session.getAttribute("email") == null) {
 			return "redirect:/login";
+		}
+
+		int size=8;
+		//size is number of events in a page
+		//sizeofeventlist total number of events
+		/*int start,sizeofeventlist,end, limit = 10;
+		if(page==1) {
+			start=1;
+		}
+		else {
+			start=8*(page-1);
+		}
+		
+		end=start+7;
+		*/
+		if(page!=0) {
+			page=page-1;
 		}
 		String email=(String) session.getAttribute("email");
 		List<User> list=es.findemail(email);
 		User user=list.get(0);
-		List<Events> eventlist=es.findbyuser(user);
-		sizeofeventlist=eventlist.size();
-		if(sizeofeventlist%6==0) {
-			sizeofeventlist/=6;
-		}
-		else {
-			sizeofeventlist=(sizeofeventlist/6)+1;
-		}
+		List<Events> eventlist=es.findbyuser(user,new PageRequest(page, size));
+		//retrieving 8 event records display in a page
+
+		double sizeofeventlist= es.eventCount();
+		
+		int totalPages  =(int) Math.ceil(sizeofeventlist / size);
+		
 		model.addAttribute("list",eventlist);
 		model.addAttribute("page",page);
-		model.addAttribute("count",count);
-		model.addAttribute("end",end);
-		model.addAttribute("size",sizeofeventlist);
+		model.addAttribute("totalPages",totalPages);
 		return "events";
 	}
 	
+	/*Displays the event detail of a particular event includes description of event,organizer etc.
+	 * 
+	 * 
+	 */
 	@RequestMapping(value="/eventdetail",method=RequestMethod.GET)
 	public String eventdetail(@RequestParam(value="eventName")String eventName,Model model) {
 		List<Events> eventlist=es.find();
@@ -126,6 +149,8 @@ public class EventController<CustomObject> {
 			return "redirect:/eventdetail";
 	}
 	
+	/*Add particular event for the user*/
+	
 	@RequestMapping(value="/editevent", method=RequestMethod.GET)
 	public String editevent(@RequestParam(value="eventName")String eventName , Model model) {
 		List<Events> eventlist=es.findbyeventname(eventName);
@@ -134,12 +159,14 @@ public class EventController<CustomObject> {
 		return "editevent";
 	}
 	
+	/*Edit page for editing particular event */
 	@RequestMapping(value="/processeditevent", method=RequestMethod.POST)
 	public String processeditevent(@ModelAttribute(value="event")Events event) {
 		es.save(event);
 		return "redirect:events";
 	}
 	
+	/*Deleting the event */
 	@RequestMapping(value="/deleteevent", method=RequestMethod.GET)
 	public String deleteevent(@RequestParam(value="eventName")String eventName) {
 		List<Events> eventlist=es.findbyeventname(eventName);

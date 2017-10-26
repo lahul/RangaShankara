@@ -50,14 +50,14 @@
 								id="PhoneNo" name="PhoneNo" placeholder="Phone Number"></form:input>
 						</div>
 						<div class="form-group">
-							<input type="file" name="file" value="upload" id="file" />
+							<input type="file" name="file" value="upload" id="file" accept="image/x-png,image/gif,image/jpeg"/>
 						</div>
 						<div class="form-group center">
 							<button type="submit" name="submit" id="submit" value="submit"
-								class="btn btn-primary width-100">Add Event</button>
+								class="btn btn-primary btn-lg">Add Event</button>
 						</div>
 						<div class="form-group center">
-							<a href="/events" class="btn btn-primary btn-lg btn-block" role="button">Cancel</a>
+							<a href="/events" class="btn btn-primary btn-lg" style="padding-left: 22px; padding-right: 22px;" role="button">Cancel</a>
 						</div>
 						<!--end form-group-->
 					</form:form>

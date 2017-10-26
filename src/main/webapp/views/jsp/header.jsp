@@ -21,9 +21,7 @@
 									</li></c:if>
 									<li><a href="resetpassword">Reset Password</a>
 									</li>
-									<li><a href="events?page=1">Events</a>
-									</li>
-									<li><a href="addevent">Add Event</a>
+									<li><a href="events">Events</a>
 									</li>
 							</ul>
 						</div>
@@ -37,6 +35,9 @@
 			<a href="javascript:;" class="signInModal">Sign In</a> <a href="#"
 				class="promoted" data-modal-external-file="modal_register.php"
 				data-target="modal-register">Register</a>
+		</div>
+		<div class="secondary-nav">
+		<a class="btn btn-primary btn-small btn-rounded icon shadow add-listing" href="/addevent">Add Event</a>
 		</div>
 	</div>
 		

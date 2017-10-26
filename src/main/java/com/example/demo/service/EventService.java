@@ -21,6 +21,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.Events;
@@ -90,12 +91,17 @@ public class EventService<CustomObject> {
 		return list;
 	}
 
+	public int eventCount() {
+		int count=eh.CountEvents();
+		return count;
+	}
+	
 	public void delete(Events event) {
 		eh.delete(event);
 	}
 
-	public List<Events> findbyuser(User user) {
-		List<Events> events = eh.findByUser(user);
+	public List<Events> findbyuser(User user,PageRequest pageRequest) {
+		List<Events> events = eh.findByUser(user,pageRequest);
 		return events;
 	}
 	/*

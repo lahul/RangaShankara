@@ -174,3 +174,10 @@ function validateeditevent() {
 		return false;
 	}
 }
+function confirmDelete() { 
+	var status = confirm("Are you sure you want to delete?");   
+	if(status)
+	{
+	return true;
+	}
+	}

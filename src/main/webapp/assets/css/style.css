@@ -5561,6 +5561,7 @@ section:not(.block) h2 {
   display: inline-block;
   padding: 5px;
 }
+
 .subject-list .ribbon {
   z-index: 2;
 }
@@ -7789,4 +7790,18 @@ body::before {
     padding-left: 10px;
     padding-right: 10px;
   }
+  a.btn-custom {
+  	border-radius: 20px;
+  }
+
+}
+
+  .right{
+  	float:right;
+  }
+  .clear{
+  	clear:both;
+  }
+.amargin{
+	margin-left:5px;
 }
