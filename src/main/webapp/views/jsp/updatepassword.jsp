@@ -1,7 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<body class="navigation-fixed">
-<div class="page-wrapper">
     <div id="page-content">
         <div class="container">
             <ol class="breadcrumb">
@@ -46,7 +44,4 @@
         <!--end container-->
     </div>
     <!--end page-content-->
-
-</div>
-</body>
 

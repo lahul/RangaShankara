@@ -1,15 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<body>
-	<div class="page-wrapper">
-		<div id="page-content">
 			<div class="container">
 				<div class="row">
-					<ul class="breadcrumb">
-						<li><a href="/">Home</a></li>
-						<li><a href="/events">Events</a></li>
-					</ul>
+				<jsp:include page="./../../helpers/breadcrumb.jsp"></jsp:include>
 					<div class="col-md-12 col-sm-8">
 						<section class="page-title">
 							<h1>Events</h1>
@@ -35,12 +29,12 @@
 													<c:choose>
 														<c:when test="${length > 10}">
 															<h3>
-																<a href="eventdetail/${eventName}">${fn:substring(eventName,0,10)}...</a>
+																<a href="eventdetail/${item.eventPkId}">${fn:substring(eventName,0,10)}...</a>
 															</h3>
 														</c:when>
 														<c:otherwise>
 															<h3>
-																<a href="eventdetail/${eventName}">${eventName}</a>
+																<a href="eventdetail/${item.eventPkId}">${eventName}</a>
 															</h3>
 														</c:otherwise>
 													</c:choose>
@@ -63,8 +57,9 @@
 													<a class="btn btn-danger btn-xs lmargin right active"
 														href="javascript:;" onclick="confirmDelete()" ><span
 														class="glyphicon glyphicon-trash"></span>&nbsp&nbsp&nbsp
-														Delete</a> <a class="btn btn-primary btn-xs right active"
-														href="/editevent?eventName=${eventName}" ><span
+														Delete</a> 
+														<a class="btn btn-primary btn-xs right active"
+														href="/editevent/${item.eventPkId}" ><span
 														class="glyphicon glyphicon-edit"></span> &nbsp&nbsp&nbsp
 														Edit</a>
 													<div class="clear"></div>
@@ -100,8 +95,3 @@
 				</div>
 				<!--end row-->
 			</div>
-			<!--end container-->
-		</div>
-		<!--end page-content-->
-	</div>
-	<!--end page-wrapper-->

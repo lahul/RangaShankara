@@ -1,6 +1,6 @@
 ﻿<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<body>
         <div class="container">
+        <jsp:include page="./../../helpers/breadcrumb.jsp"></jsp:include>
             <div class="row">
                 <div class="col-md-4 col-sm-4 col-md-offset-4 col-sm-offset-4">
                     <section class="page-title">
@@ -64,5 +64,5 @@
         </div>
         <!--end container-->
 <a href="#" class="to-top scroll" data-show-after-scroll="600"><i class="arrow_up"></i></a>
-</body>
+
 

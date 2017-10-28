@@ -33,6 +33,8 @@ import com.example.demo.repository.UserHib;
 @Transactional
 public class EventService<CustomObject> {
 
+	final String IMAGE_PATH="src/main/webapp/assets/images/";
+	
 	@Autowired
 	ServletContext context;
 	
@@ -67,7 +69,12 @@ public class EventService<CustomObject> {
 		List<User> list = uh.findByToken(token);
 		return list;
 	}
-
+	
+	public User findFirstUser(String email) {
+		User u=uh.findFirstByEmail(email);
+		return u;
+	}
+	
 	public void save(User user) {
 		User u = uh.save(user);
 	}
@@ -85,12 +92,16 @@ public class EventService<CustomObject> {
 		List<Events> list = eh.findByEventName(eventName);
 		return list;
 	}
-
+/*
 	public List<Events> find() {
 		List<Events> list = eh.findEvents();
 		return list;
 	}
-
+*/
+	public List Join() {
+		List list=eh.join();
+		return list;
+	}
 	public int eventCount() {
 		int count=eh.CountEvents();
 		return count;
@@ -100,9 +111,13 @@ public class EventService<CustomObject> {
 		eh.delete(event);
 	}
 
-	public List<Events> findbyuser(User user,PageRequest pageRequest) {
+	public List<Events> findbyuser(User user, PageRequest pageRequest) {
 		List<Events> events = eh.findByUser(user,pageRequest);
 		return events;
+	}
+	public Events findById(int eventPkId) {
+		Events e=eh.findFirstByEventPkId(eventPkId);
+		return e;
 	}
 	/*
 	 * public List<Events> find(String eventName){ List result=entityManager.
@@ -123,14 +138,10 @@ public class EventService<CustomObject> {
 	 * list=query.getResultList(); System.out.println(list); }
 	 */
 
-	public String copyfile(Part file) throws IOException {
-		String filename=Paths.get(file.getSubmittedFileName()).getFileName().toString();
+	public void copyfile(Part file,String filename) throws IOException {
 		InputStream filecontent=file.getInputStream();
-		String curdir=System.getProperty("user.dir");
-		System.out.println(curdir);
-		//File newfile=new File("C:\\Users\\LAHUL\\Documents\\files\\"+filename);
 		
-		File newfile=new File("src/main/webapp/assets/images/"+filename);
+		File newfile=new File(IMAGE_PATH+filename);
 		newfile.createNewFile();
 		OutputStream outputStream =new FileOutputStream(newfile);
 		   int read = 0;  
@@ -138,8 +149,24 @@ public class EventService<CustomObject> {
 		   while ((read = filecontent.read(bytes)) != -1) {  
 			    outputStream.write(bytes, 0, read);  
 			   } 
-		return filename;
+		
 }
+/*
+	public List findevents() {
+		logger.warn("{}","ssss"); 
+		List list = null;
+			try {
+			 Query query = entityManager.createNativeQuery("select e from Events e");
+			 logger.warn("{}",query); 
+			 list= query.getResultList(); 
+			 logger.warn("{}",list); 
+			 
+			}catch(Exception e) {
+				logger.warn("{}",e.getMessage());
+			}
+		return list;
+	}
+	*/
 }
 /*
  * public List<Events> find(String eventName){ String query =

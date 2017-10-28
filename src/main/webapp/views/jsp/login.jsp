@@ -1,9 +1,5 @@
-
-<body class="navigation-fixed">
-<div class="page-wrapper">
-    <div id="page-content">
         <div class="container">
-            <!--end breadcrumb-->
+            
             <div class="row">
                 <div class="col-md-4 col-sm-4 col-md-offset-4 col-sm-offset-4">
                     <section class="page-title">
@@ -41,9 +37,5 @@
             <!--end ro-->
         </div>
         <!--end container-->
-    </div>
-    <!--end page-content-->
 
-</div>
-</body>
 

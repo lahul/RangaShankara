@@ -26,7 +26,7 @@ public class Events {
 	
 	
 	@Id
-	private int event_pk_id;
+	private int eventPkId;
 	
 	@Column(name="event_name")
 	private String eventName;
@@ -50,18 +50,40 @@ public class Events {
 	
 	private Integer phoneNo;
 	
+	private Integer user_fk_id;
+	
+	
+	@ManyToOne
+	@JoinColumn(name="user_fk_id", nullable=false)
+	private User user;
+	
 	/*@CreationTimestamp
 	private Timestamp creationTime;
 	
 	@UpdateTimestamp
 	private Timestamp updateTime;*/
 	
-	public int getEvent_pk_id() {
-		return event_pk_id;
+	
+	public Integer getUserFkId() {
+		return user_fk_id;
+	}
+
+	
+
+	public void setUserFkId(Integer user_fk_id) {
+		this.user_fk_id = user_fk_id;
 	}
 
 	public Integer getPhoneNo() {
 		return phoneNo;
+	}
+
+	public int getEventPkId() {
+		return eventPkId;
+	}
+
+	public void setEventPkId(int eventPkId) {
+		this.eventPkId = eventPkId;
 	}
 
 	public void setPhoneNo(Integer phoneNo) {
@@ -79,9 +101,7 @@ public class Events {
 	@Column(name="event_description")
 	private String eventDescription;
 	
-	@ManyToOne
-	@JoinColumn(name="event_fk_id",nullable=false,referencedColumnName="user_pk_id")
-	private User user;
+
 	
 	public Events() {} 
 	
@@ -124,17 +144,7 @@ public class Events {
 		this.eventTime = eventTime;
 	}
 
-	public int getEvents_id() {
-		return event_pk_id;
-	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
 
 	public String getOrganizer() {
 		return organizer;
@@ -167,6 +177,8 @@ public class Events {
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
-	
 
+	
+	
+	
 }

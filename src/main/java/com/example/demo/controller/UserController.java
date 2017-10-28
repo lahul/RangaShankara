@@ -86,7 +86,7 @@ public class UserController {
 	/*Mapping for the login page */
 	
 	@RequestMapping("/login")
-	public String signin(HttpSession session, HttpServletRequest request) {
+	public String signin(HttpSession session, HttpServletRequest request,Model model) {
 		session = request.getSession(false);
 		if (session.getAttribute("email") != null) {
 			return "redirect:/";
@@ -105,6 +105,8 @@ public class UserController {
 			if (bcrypt.matches(password, list.get(0).getPassword())) {
 				session = request.getSession();
 				session.setAttribute("email", email);
+				User user=es.findFirstUser(email);
+				session.setAttribute("userid", user.getUser_pk_id());
 				return "redirect:/";
 			} else
 				return "register";
@@ -114,7 +116,7 @@ public class UserController {
 	/*Displays reset password page that asks for reset email */
 	
 	@RequestMapping("/resetpassword")
-	public String resetpassword(HttpServletRequest request, HttpSession session) {
+	public String resetpassword(HttpServletRequest request, HttpSession session,Model model) {
 		return "resetpassword";
 	}
 

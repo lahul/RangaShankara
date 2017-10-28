@@ -7093,7 +7093,7 @@ form {
   width: 49%;
 }
 .form .btn[type=submit] {
-  padding: 13px;
+  padding: 10px;
   margin-top: -2px;
 }
 
@@ -7807,4 +7807,8 @@ body::before {
 }
 .rmargin{
 	margin-right:5px;
+}
+.file {
+  visibility: hidden;
+  position: absolute;
 }

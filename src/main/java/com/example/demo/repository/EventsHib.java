@@ -28,8 +28,8 @@ public interface EventsHib extends CrudRepository<Events, String>{
 	/*@Query("Select e from Events e join e.user u")
 	public List<Object> findEvents();*/
 	
-	@Query(value="select * from Events e inner join user u on u.user_pk_id=e.event_fk_id",nativeQuery=true)
-	public List<Events> findEvents();
+	@Query(value="select * from user u inner join Events e on u.user_pk_id=e.user_fk_id",nativeQuery=true)
+	public List<Events> join();
 	/*
 	@Query("Select e.user from Events e where e.eventName=:event")
 	public List<Object> findEvents(@Param("event")String event);
@@ -43,4 +43,6 @@ public interface EventsHib extends CrudRepository<Events, String>{
 	
 	@Query("Select e from Events e where e.user=?1")
 	public List<Events> findByUser(User user,Pageable pageable);
+	
+	public Events findFirstByEventPkId(int eventPkId);
 }

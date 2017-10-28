@@ -1,18 +1,18 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<body onload="dategenerator()">
-
 	<div class="container">
+		<jsp:include page="./../../helpers/breadcrumb.jsp"></jsp:include>
 		<div class="row">
 			<div class="col-md-4 col-sm-4 col-md-offset-4 col-sm-offset-4">
 				<section class="page-title">
-					<h1>EDIT EVENT</h1>
+					<h1>Edit Event</h1>
 				</section>
 				<!--end page-title-->
 				<section>
 					<form:form class="form inputs-underline" id="addeventform"
 						modelAttribute="event" action="/processeditevent"
 						onsubmit="return validateaddevent()">
+						<form:hidden path="eventPkId"/>
 						<div class="form-group">
 							<label for="event_name">Event Name</label>
 							<form:input type="text" class="form-control" path="eventName"
@@ -45,7 +45,7 @@
 								id="price" name="price" placeholder="Price"></form:input>
 						</div>
 						<div class="form-group center">
-							<button type="submit" class="btn btn-primary">Add
+							<button type="submit" class="btn btn-primary">Edit
 								Event</button>
 							<a href="/events" class="btn btn-primary btn-lg" role="button">Cancel</a>
 						</div>
@@ -58,5 +58,3 @@
 		</div>
 		<!--end ro-->
 	</div>
-	<!--end container-->
-</body>

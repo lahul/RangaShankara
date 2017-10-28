@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,7 +65,7 @@ public class EventController<CustomObject> {
 	 */
 	
 	@RequestMapping(value="/events",method=RequestMethod.GET)
-	public String events(@RequestParam(value="page",defaultValue="0")Integer page,Model model,HttpSession session,HttpServletRequest request) {
+	public String events(@RequestParam(value="page",defaultValue="0")int page,Model model,HttpSession session,HttpServletRequest request) {
 		session=request.getSession(false);
 		if (session.getAttribute("email") == null) {
 			return "redirect:/login";
@@ -86,19 +87,26 @@ public class EventController<CustomObject> {
 		if(page!=0) {
 			page=page-1;
 		}
+		
+		List list=es.Join();	
+		System.out.println(list.toString());
+		System.exit(0);
+		
 		String email=(String) session.getAttribute("email");
-		List<User> list=es.findemail(email);
-		User user=list.get(0);
-		List<Events> eventlist=es.findbyuser(user,new PageRequest(page, size));
+		//List<User> list=es.findemail(email);
+		//User user=list.get(0);
+		//List<Events> eventlist=es.findbyuser(user,new PageRequest(page, size));
 		//retrieving 8 event records display in a page
 
 		double sizeofeventlist= es.eventCount();
 		
 		int totalPages  =(int) Math.ceil(sizeofeventlist / size);
 		
-		model.addAttribute("list",eventlist);
+		//model.addAttribute("list",eventlist);
 		model.addAttribute("page",page);
 		model.addAttribute("totalPages",totalPages);
+		String[][] arr=new String[][]{{"home","#"},{"events","/events"}};
+		model.addAttribute("arr",arr);
 		return "events";
 	}
 	
@@ -106,18 +114,19 @@ public class EventController<CustomObject> {
 	 * 
 	 * 
 	 */
-	@RequestMapping(value="/eventdetail/{eventName}",method=RequestMethod.GET)
-	public String eventdetail(@PathVariable(value="eventName")String eventName,Model model) {
-		List<Events> eventlist=es.find();
-		List<User> userlist=new ArrayList<>();
-		User user=new User();
-		for(int i=0;i<eventlist.size();i++) {
-		user=eventlist.get(i).getUser();
-		userlist.add(user);
+/*	@RequestMapping(value="/eventdetail/{eventPkId}",method=RequestMethod.GET)
+	public String eventdetail(@PathVariable(value="eventPkId")int eventPkId,Model model,HttpSession session) {
+		Integer id= (Integer) session.getAttribute("userid");
+		
+		Events eventlist=es.findById(eventPkId);
+		
+		User u=eventlist.getUser();
+		if(id!=u.getUser_pk_id()) {
+			return "/";
 		}
 		model.addAttribute("eventlist",eventlist);
-		model.addAttribute("userlist",userlist);
-		
+		String[][] arr=new String[][]{{"home","#"},{"events","/events"},{"eventdetail","/eventdetail"}};
+		model.addAttribute("arr",arr);
 		return "eventdetail";
 	}
 	
@@ -129,49 +138,60 @@ public class EventController<CustomObject> {
 		}
 		Events event=new Events();
 		model.addAttribute("event",event);
+		String[][] arr=new String[][]{{"home","#"},{"addevent","/addevent"}};
+		model.addAttribute("arr",arr);
 		return "addevent";
 	}
 	
 	@RequestMapping("processaddevent")
 	public String processaddevent(@ModelAttribute(value="event")@Valid Events event,@RequestParam(value="submit")String submit,BindingResult bindingResult,Model model,HttpSession session,HttpServletRequest request) throws IOException, ServletException {
-		if(submit.equals("submit")) {
-		String email=(String) session.getAttribute("email");
-		Part file=request.getPart("file");
-		String filename=es.copyfile(file);
-		event.setImage(filename);
-		logger.info("{}",bindingResult.toString());
-		User u=new User();
-		List list=es.findemail(email);
-		event.setUser((User) list.get(0));
-		es.save(event);
-		return "redirect:/";
-		}
-		else
-			return "redirect:/eventdetail";
+			String email=(String) session.getAttribute("email");
+			Part file=request.getPart("file");
+			String filename=Paths.get(file.getSubmittedFileName()).getFileName().toString();
+			if(filename.isEmpty()) {
+			es.copyfile(file,filename);
+			event.setImage(filename);
+			logger.info("{}",bindingResult.toString());
+			User u=new User();
+			List list=es.findemail(email);
+			event.setUser((User) list.get(0));
+			es.save(event);
+			return "redirect:/events";
+			}
+			return "redirect:/";
 	}
 	
 	/*Add particular event for the user*/
 	
-	@RequestMapping(value="/editevent", method=RequestMethod.GET)
-	public String editevent(@RequestParam(value="eventName")String eventName , Model model) {
-		List<Events> eventlist=es.findbyeventname(eventName);
-		Events event=eventlist.get(0);
+/*	@RequestMapping(value="/editevent/{eventPkId}", method=RequestMethod.GET)
+	public String editevent(@PathVariable(value="eventPkId")int eventPkId , Model model) {
+		Events event=es.findById(eventPkId);
+		System.out.println(eventPkId);
 		model.addAttribute("event",event);
+		String[][] arr=new String[][]{{"home","#"},{"editevent","/editevent"}};
 		return "editevent";
 	}
 	
 	/*Edit page for editing particular event */
-	@RequestMapping(value="/processeditevent", method=RequestMethod.POST)
-	public String processeditevent(@ModelAttribute(value="event")Events event) {
+	/*@RequestMapping(value="/processeditevent", method=RequestMethod.POST)
+	public String processeditevent(@ModelAttribute(value="event")Events event,HttpSession session) {
+		String email=(String) session.getAttribute("email");
+		if(email==null) {
+			return "redirect:/login";
+		}
+		System.out.println(event.getEventPkId());
+		System.exit(0);
+		List<User> u=es.findemail(email);
+		User user=u.get(0);
+		event.setUser(user);
 		es.save(event);
 		return "redirect:events";
-	}
+	}*/
 	
 	/*Deleting the event */
-	@RequestMapping(value="/deleteevent", method=RequestMethod.GET)
-	public String deleteevent(@RequestParam(value="eventName")String eventName) {
-		List<Events> eventlist=es.findbyeventname(eventName);
-		Events event=eventlist.get(0);
+	@RequestMapping(value="/deleteevent/{eventPkId}", method=RequestMethod.GET)
+	public String deleteevent(@RequestParam(value="eventPkId")int eventPkId) {
+		Events event=es.findById(eventPkId);
 		es.delete(event);
 		return "redirect:events";
 	
