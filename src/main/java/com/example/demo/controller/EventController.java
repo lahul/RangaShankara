@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,18 +40,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.entity.Events;
 import com.example.demo.entity.User;
 import com.example.demo.service.EventService;
+import com.example.demo.service.GenericService;
 
 @Controller
-public class EventController<CustomObject> {
+public class EventController {
 
+	final static int PAGE_SIZE=8;
+	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	EventService es;
+	
+	@Autowired
+	GenericService gs;
 	
 	/* changing the default format of the Date type to suit to datetime format*/
 	
@@ -65,47 +74,43 @@ public class EventController<CustomObject> {
 	 */
 	
 	@RequestMapping(value="/events",method=RequestMethod.GET)
-	public String events(@RequestParam(value="page",defaultValue="0")int page,Model model,HttpSession session,HttpServletRequest request) {
-		session=request.getSession(false);
-		if (session.getAttribute("email") == null) {
+	public String events(@RequestParam(value="page",defaultValue="0")int page,@RequestParam(value="searchitem",defaultValue="")String searchitem,Model model,HttpSession session,HttpServletRequest request) {
+		int searchflag; 
+		List<Events> eventlist;
+		int totalPages;
+		if(gs.checkSession(session,request)) {
 			return "redirect:/login";
 		}
-
-		int size=8;
-		//size is number of events in a page
-		//sizeofeventlist total number of events
-		/*int start,sizeofeventlist,end, limit = 10;
-		if(page==1) {
-			start=1;
+		String email=(String) session.getAttribute("email");
+		List<User> list=es.findemail(email);
+		User user=list.get(0);
+		if(searchitem.length()!=0) {
+			searchflag=Integer.parseInt(request.getParameter("searchflag"));
+			if(searchflag==0) {
+				searchflag=1;
+				page=0;
+			}
+			if(page!=0) {
+				page=page-1;
+			}
+			eventlist=es.search(user,searchitem,new PageRequest(page,PAGE_SIZE));
+			totalPages=gs.pagesizeforSearch(user,searchitem,PAGE_SIZE);
+			model.addAttribute("searchflag",searchflag);
 		}
 		else {
-			start=8*(page-1);
-		}
-		
-		end=start+7;
-		*/
+		searchflag=0;
 		if(page!=0) {
 			page=page-1;
 		}
-		
-		List list=es.Join();	
-		System.out.println(list.toString());
-		System.exit(0);
-		
-		String email=(String) session.getAttribute("email");
-		//List<User> list=es.findemail(email);
-		//User user=list.get(0);
-		//List<Events> eventlist=es.findbyuser(user,new PageRequest(page, size));
+		eventlist=es.findbyuser(user,new PageRequest(page, PAGE_SIZE));
 		//retrieving 8 event records display in a page
 
-		double sizeofeventlist= es.eventCount();
-		
-		int totalPages  =(int) Math.ceil(sizeofeventlist / size);
-		
-		//model.addAttribute("list",eventlist);
+		totalPages=gs.pagesize(PAGE_SIZE);
+		}
+		model.addAttribute("list",eventlist);
 		model.addAttribute("page",page);
 		model.addAttribute("totalPages",totalPages);
-		String[][] arr=new String[][]{{"home","#"},{"events","/events"}};
+		String[][] arr=new String[][]{{"home","/"},{"events","/events"}};
 		model.addAttribute("arr",arr);
 		return "events";
 	}
@@ -114,18 +119,18 @@ public class EventController<CustomObject> {
 	 * 
 	 * 
 	 */
-/*	@RequestMapping(value="/eventdetail/{eventPkId}",method=RequestMethod.GET)
+	@RequestMapping(value="/eventdetail/{eventPkId}",method=RequestMethod.GET)
 	public String eventdetail(@PathVariable(value="eventPkId")int eventPkId,Model model,HttpSession session) {
 		Integer id= (Integer) session.getAttribute("userid");
 		
 		Events eventlist=es.findById(eventPkId);
 		
-		User u=eventlist.getUser();
-		if(id!=u.getUser_pk_id()) {
-			return "/";
+		Integer uid=eventlist.getUser().getUserPkId();
+		if(!uid.equals(id)) {
+			return "redirect:/error";
 		}
 		model.addAttribute("eventlist",eventlist);
-		String[][] arr=new String[][]{{"home","#"},{"events","/events"},{"eventdetail","/eventdetail"}};
+		String[][] arr=new String[][]{{"home","#"},{"events","/events"},{"event detail","/eventdetail"}};
 		model.addAttribute("arr",arr);
 		return "eventdetail";
 	}
@@ -138,7 +143,7 @@ public class EventController<CustomObject> {
 		}
 		Events event=new Events();
 		model.addAttribute("event",event);
-		String[][] arr=new String[][]{{"home","#"},{"addevent","/addevent"}};
+		String[][] arr=new String[][]{{"home","/"},{"events","/events"},{"add event","/addevent"}};
 		model.addAttribute("arr",arr);
 		return "addevent";
 	}
@@ -147,8 +152,14 @@ public class EventController<CustomObject> {
 	public String processaddevent(@ModelAttribute(value="event")@Valid Events event,@RequestParam(value="submit")String submit,BindingResult bindingResult,Model model,HttpSession session,HttpServletRequest request) throws IOException, ServletException {
 			String email=(String) session.getAttribute("email");
 			Part file=request.getPart("file");
+			String location=request.getParameter("formatted_address");
+			if(location!=null) {
+			event.setLocation(location);
+			event.setLatitude(request.getParameter("lat"));
+			event.setLongitude(request.getParameter("lng"));
+			}
 			String filename=Paths.get(file.getSubmittedFileName()).getFileName().toString();
-			if(filename.isEmpty()) {
+			if(!filename.isEmpty()) {
 			es.copyfile(file,filename);
 			event.setImage(filename);
 			logger.info("{}",bindingResult.toString());
@@ -163,37 +174,63 @@ public class EventController<CustomObject> {
 	
 	/*Add particular event for the user*/
 	
-/*	@RequestMapping(value="/editevent/{eventPkId}", method=RequestMethod.GET)
+	@RequestMapping(value="/editevent/{eventPkId}", method=RequestMethod.GET)
 	public String editevent(@PathVariable(value="eventPkId")int eventPkId , Model model) {
 		Events event=es.findById(eventPkId);
-		System.out.println(eventPkId);
 		model.addAttribute("event",event);
-		String[][] arr=new String[][]{{"home","#"},{"editevent","/editevent"}};
+		model.addAttribute("location",event.getLocation());
+		String[][] arr=new String[][]{{"home","#"},{"edit event","/editevent"}};
+		model.addAttribute("arr",arr);
 		return "editevent";
 	}
 	
 	/*Edit page for editing particular event */
-	/*@RequestMapping(value="/processeditevent", method=RequestMethod.POST)
+	@RequestMapping(value="/processeditevent", method=RequestMethod.POST)
 	public String processeditevent(@ModelAttribute(value="event")Events event,HttpSession session) {
 		String email=(String) session.getAttribute("email");
 		if(email==null) {
 			return "redirect:/login";
 		}
-		System.out.println(event.getEventPkId());
-		System.exit(0);
+		//System.out.println(event.getEventPkId());
+		//System.exit(0);
 		List<User> u=es.findemail(email);
 		User user=u.get(0);
 		event.setUser(user);
 		es.save(event);
 		return "redirect:events";
-	}*/
+	}
 	
 	/*Deleting the event */
 	@RequestMapping(value="/deleteevent/{eventPkId}", method=RequestMethod.GET)
-	public String deleteevent(@RequestParam(value="eventPkId")int eventPkId) {
+	public @ResponseBody Events deleteevent(@PathVariable(value="eventPkId")int eventPkId) {
 		Events event=es.findById(eventPkId);
-		es.delete(event);
-		return "redirect:events";
+		//es.delete(event);
+		//return "redirect:/events";
+		return event;
 	
 	}
+
+	/*
+	@RequestMapping(value="/search")
+	public String search(@RequestParam(value="page",defaultValue="0")int page,HttpSession session,HttpServletRequest request,Model model) {
+		
+		String searchitem=request.getParameter("searchitem");
+		if(gs.checkSession(session, request)) {
+			return "redirect: /login";
+		}
+		if(page!=0) {
+			page=page-1;
+		}
+		List<Events> eventlist=es.search(searchitem,new PageRequest(page, PAGE_SIZE));
+		int totalPages=gs.pagesize(PAGE_SIZE);
+		
+		model.addAttribute("list",eventlist);
+		model.addAttribute("page",page);
+		System.out.println(page);
+		model.addAttribute("totalPages",totalPages);
+		String[][] arr=new String[][]{{"home","#"},{"events","/events"}};
+		model.addAttribute("arr",arr);
+		return "events";
+	}
+	*/
 }

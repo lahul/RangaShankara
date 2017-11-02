@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+
 import com.example.demo.entity.User;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.EventService;
@@ -72,8 +73,8 @@ public class UserController {
 	@RequestMapping("processregister")
 	public String processRegister(@ModelAttribute(value = "user") User user, HttpServletRequest request) {
 		String cpassword = request.getParameter("cpassword");
-		System.out.println(cpassword);
-		System.out.println(user.getPassword());
+		//System.out.println(cpassword);
+		//System.out.println(user.getPassword());
 		if (cpassword.equals(user.getPassword())) {
 			user.setPassword(bcrypt.encode(user.getPassword()));
 		} else {
@@ -106,7 +107,7 @@ public class UserController {
 				session = request.getSession();
 				session.setAttribute("email", email);
 				User user=es.findFirstUser(email);
-				session.setAttribute("userid", user.getUser_pk_id());
+				session.setAttribute("userid", user.getUserPkId());
 				return "redirect:/";
 			} else
 				return "register";

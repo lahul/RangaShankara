@@ -9,20 +9,42 @@
 							<h1>Events</h1>
 
 						</section>
-						<!--end section-title-->
-
+						<section>
+						<form> 
+  <div class="row">
+  
+    <div class="col-xs-6 col-md-6">
+    <form>
+      <div class="input-group">
+      
+   <input type="text" class="form-control width-control" name="searchitem" placeholder="Search" id="txtSearch"/>
+   <div class="input-group-btn">
+   		<input type="hidden" name="searchflag" value="0">
+        <button class="btn btn-primary extrapadding" type="submit">
+        <span class="glyphicon glyphicon-search"></span>
+        </button>
+    </div>
+   
+  
+   </div>
+   </form>
+    </div>
+	
+  </div>
+</form>      
+						</section>
 						<section>
 							<div class="row">
 								<c:forEach items="${list}" var="item">
 									<div class="col-md-3 col-sm-6">
 										<div class="subject-list text-primary">
 
-											<a href="eventdetail/${item.eventName}"><img
+											<a href="eventdetail/${item.eventPkId}"><img
 												src="/assets/images/${item.image}" width="263" height="210"></a>
 
 											<!--end image-->
 											<div class="description">
-												<section class="name">
+												<section class="name" <c:if test="${empty item.phoneNo}"> style="border-bottom: 0em;"</c:if>>
 													<c:set var="eventName"
 														value="${fn:toUpperCase(item.eventName)}"></c:set>
 													<c:set var="length" value="${fn:length(eventName)}" />
@@ -48,10 +70,18 @@
 
 												</section>
 												<!--end description-->
-												<section class="contacts">
+												<c:choose>
+												<c:when test="${not empty item.phoneNo}"><section class="contacts">
 													<figure>
 														<i class="fa fa-phone"></i>${item.phoneNo}</figure>
+												</section></c:when>
+												<c:otherwise>
+												<section class="contacts">
+													<figure>
+														<i></i></figure>
 												</section>
+												</c:otherwise>
+												</c:choose>
 												<!--end contacts-->
 												<section class="social">
 													<a class="btn btn-danger btn-xs lmargin right active"
@@ -81,10 +111,12 @@
 									<ul class="pagination">
 
 										<c:set var="index" value="0" />
-
+										<c:set var="active" value="active"/>
 										<c:forEach begin="${index}" end="${totalPages-1}">
-											<li class="page-item"><a href="/events?page=${index+1}">${index+1}</a></li>
+											<c:if test="${page==index}"><c:set var="a" value="active"></c:set></c:if>
+											<li class="page-item ${a}"><a href="/events?page=${index+1}">${index+1}</a></li>
 											<c:set var="index" value="${index+1}"></c:set>
+											<c:if test="${a==active}"><c:set var="a" value=""></c:set></c:if>
 										</c:forEach>
 									</ul>
 								</nav>

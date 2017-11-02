@@ -2,7 +2,7 @@
 <nav>
 	<div class="left">
 	<a href="/">
-		<img src="assets/img/logo.png"
+		<img src="/assets/img/logo.png"
 			alt="">
 	</a>
 	</div>
@@ -14,16 +14,18 @@
 				<li class="has-child"><a href="#nav-locations">Profile</a>
 					<div class="wrapper">
 						<div id="nav-locations" class="nav-wrapper">
-							<ul>
-								<c:if test="${status==s}"><li><a href="login">Login</a>
-									</li></c:if>
-								<c:if test="${status==s}"><li><a href="register">Register</a>
-									</li></c:if>
-									<li><a href="resetpassword">Reset Password</a>
+							<c:if test="${status!=s}"><ul>
+									<li><a href="/events">Events</a>
 									</li>
-									<li><a href="events">Events</a>
+							</ul></c:if>
+							<c:if test="${status==s}"><ul>
+							<li><a href="/login">Login</a>
 									</li>
-							</ul>
+							<li><a href="/register">Register</a>
+									</li>
+							<li><a href="/resetpassword">Reset Password</a>
+									</li>
+							</ul></c:if>
 						</div>
 						<!--end nav-wrapper-->
 					</div> <!--end wrapper--></li>

@@ -3,7 +3,7 @@
 	<div class="container">
 		<jsp:include page="./../../helpers/breadcrumb.jsp"></jsp:include>
 		<div class="row">
-			<div class="col-md-4 col-sm-4 col-md-offset-4 col-sm-offset-4">
+			<div class="col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
 				<section class="page-title">
 					<h1>Edit Event</h1>
 				</section>
@@ -44,10 +44,19 @@
 							<form:input type="text" class="form-control" path="price"
 								id="price" name="price" placeholder="Price"></form:input>
 						</div>
+						<div class="form-group">
+						<div id="loc">
+							<input name="lat" type="hidden" value=""> <input
+								name="lng" type="hidden" value=""> <label for="Location">Location</label><input
+								id="my_input" name="formatted_address" type="text" value="${event.location}">
+							<div id="my_map"></div>
+						</div>
+
+					</div>
 						<div class="form-group center">
 							<button type="submit" class="btn btn-primary">Edit
 								Event</button>
-							<a href="/events" class="btn btn-primary btn-lg" role="button">Cancel</a>
+							<a href="/events" class="cancel-anchor" role="button">Cancel</a>
 						</div>
 						<!--end form-group-->
 					</form:form>

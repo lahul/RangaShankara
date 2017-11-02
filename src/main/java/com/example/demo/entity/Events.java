@@ -50,9 +50,7 @@ public class Events {
 	
 	private Integer phoneNo;
 	
-	private Integer user_fk_id;
-	
-	
+
 	@ManyToOne
 	@JoinColumn(name="user_fk_id", nullable=false)
 	private User user;
@@ -63,17 +61,17 @@ public class Events {
 	@UpdateTimestamp
 	private Timestamp updateTime;*/
 	
-	
-	public Integer getUserFkId() {
-		return user_fk_id;
+
+	public User getUser() {
+		return user;
 	}
 
-	
 
-	public void setUserFkId(Integer user_fk_id) {
-		this.user_fk_id = user_fk_id;
+
+	public void setUser(User user) {
+		this.user = user;
 	}
-
+	
 	public Integer getPhoneNo() {
 		return phoneNo;
 	}

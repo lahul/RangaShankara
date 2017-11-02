@@ -61,8 +61,8 @@
 <script type="text/javascript" src="/assets/js/formvalidator.js"></script>
 <script type="text/javascript" src="/assets/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
 <script type="text/javascript" src="/assets/js/locales/bootstrap-datetimepicker.fr.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/assets/js/jquery.geocomplete.js"></script>
 <script type="text/javascript" src="/assets/js/addevent_custom.js"></script>
-
 <script>
     var optimizedDatabaseLoading = 0;
     var _latitude = 40.7344458;
