@@ -7,7 +7,7 @@
                     </section>
                     <!--end page-title-->
                     <section>
-                        <form class="form inputs-underline" action="processsignin"  onsubmit="return validateLogin()">
+                        <form class="form inputs-underline" id="loginform" action="processsignin"  onsubmit="return validateLogin()">
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="text" class="form-control" name="email" id="email" placeholder="Your email">
@@ -18,7 +18,7 @@
                                 <input type="password" class="form-control" name="password" id="password" placeholder="Your password">
                             </div>
                             <div class="form-group center">
-                                <button type="submit" class="btn btn-primary width-100">Sign In</button>
+                                <button type="submit" class="btn btn-primary width-100" id="login-button">Sign In</button>
                             </div>
                             <!--end form-group-->
                         </form>

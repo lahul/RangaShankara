@@ -1,20 +1,14 @@
 package com.example.demo.controller;
 
-import static org.mockito.Matchers.intThat;
-
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,21 +16,22 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import javax.validation.Valid;
 
-import org.assertj.core.internal.Lists;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,10 +42,14 @@ import com.example.demo.entity.User;
 import com.example.demo.service.EventService;
 import com.example.demo.service.GenericService;
 
+import antlr.debug.Event;
+
+import com.example.demo.config.ConstantConfiguration;
+
 @Controller
 public class EventController {
 
-	final static int PAGE_SIZE=8;
+	
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -73,6 +72,7 @@ public class EventController {
 	 * if user is not logged in then login page is shown
 	 */
 	
+	
 	@RequestMapping(value="/events",method=RequestMethod.GET)
 	public String events(@RequestParam(value="page",defaultValue="0")int page,@RequestParam(value="searchitem",defaultValue="")String searchitem,Model model,HttpSession session,HttpServletRequest request) {
 		int searchflag; 
@@ -93,8 +93,8 @@ public class EventController {
 			if(page!=0) {
 				page=page-1;
 			}
-			eventlist=es.search(user,searchitem,new PageRequest(page,PAGE_SIZE));
-			totalPages=gs.pagesizeforSearch(user,searchitem,PAGE_SIZE);
+			eventlist=es.search(user,searchitem,new PageRequest(page,ConstantConfiguration.PAGE_SIZE));
+			totalPages=gs.pagesizeforSearch(user,searchitem,ConstantConfiguration.PAGE_SIZE);
 			model.addAttribute("searchflag",searchflag);
 		}
 		else {
@@ -102,10 +102,10 @@ public class EventController {
 		if(page!=0) {
 			page=page-1;
 		}
-		eventlist=es.findbyuser(user,new PageRequest(page, PAGE_SIZE));
+		eventlist=es.findbyuser(user,new PageRequest(page, ConstantConfiguration.PAGE_SIZE));
 		//retrieving 8 event records display in a page
 
-		totalPages=gs.pagesize(PAGE_SIZE);
+		totalPages=gs.pagesize(ConstantConfiguration.PAGE_SIZE);
 		}
 		model.addAttribute("list",eventlist);
 		model.addAttribute("page",page);
@@ -114,7 +114,15 @@ public class EventController {
 		model.addAttribute("arr",arr);
 		return "events";
 	}
-	
+	/*
+	@RequestMapping(value="/events",method=RequestMethod.GET)
+	public String events(@RequestParam(value="page",defaultValue="0")int page,@RequestParam(value="searchitem",defaultValue="")String searchitem,Model model,HttpSession session,HttpServletRequest request) {
+		List list=es.Join();
+		System.out.println(list.toString());
+		System.exit(0);
+		return "events";
+	}
+	*/	
 	/*Displays the event detail of a particular event includes description of event,organizer etc.
 	 * 
 	 * 
@@ -138,7 +146,7 @@ public class EventController {
 	@RequestMapping("/addevent")
 	public String addevent(Model model,HttpServletRequest request,HttpSession session) {
 		session=request.getSession(false);
-		if (session.getAttribute("email") == null) {
+		if (session.getAttribute("userid") == null) {
 			return "redirect:/login";
 		}
 		Events event=new Events();
@@ -149,9 +157,21 @@ public class EventController {
 	}
 	
 	@RequestMapping("processaddevent")
-	public String processaddevent(@ModelAttribute(value="event")@Valid Events event,@RequestParam(value="submit")String submit,BindingResult bindingResult,Model model,HttpSession session,HttpServletRequest request) throws IOException, ServletException {
+	public String processaddevent(@ModelAttribute(value="event")@Valid Events event, @RequestParam(value="submit")String submit,BindingResult bindingResult,Model model,HttpSession session,HttpServletRequest request) throws IOException, ServletException {
 			String email=(String) session.getAttribute("email");
+			StringBuilder builder = new StringBuilder();
+		    List<FieldError> errors = bindingResult.getFieldErrors();
+		    for (FieldError error : errors ) {
+		       builder.append(error.getField() + " : " + error.getDefaultMessage());
+		       model.addAttribute("message",builder.toString());
+		       System.out.println(builder.toString());
+		       return "redirect:/error";
+		    } 
+		    
 			Part file=request.getPart("file");
+			if(file == null) {
+				return "redirect:/error";
+			}
 			String location=request.getParameter("formatted_address");
 			if(location!=null) {
 			event.setLocation(location);
@@ -159,17 +179,18 @@ public class EventController {
 			event.setLongitude(request.getParameter("lng"));
 			}
 			String filename=Paths.get(file.getSubmittedFileName()).getFileName().toString();
-			if(!filename.isEmpty()) {
+			System.out.println(filename);
+			if(filename!=null) {
 			es.copyfile(file,filename);
 			event.setImage(filename);
+			}
 			logger.info("{}",bindingResult.toString());
 			User u=new User();
 			List list=es.findemail(email);
 			event.setUser((User) list.get(0));
 			es.save(event);
 			return "redirect:/events";
-			}
-			return "redirect:/";
+			
 	}
 	
 	/*Add particular event for the user*/
@@ -186,26 +207,46 @@ public class EventController {
 	
 	/*Edit page for editing particular event */
 	@RequestMapping(value="/processeditevent", method=RequestMethod.POST)
-	public String processeditevent(@ModelAttribute(value="event")Events event,HttpSession session) {
-		String email=(String) session.getAttribute("email");
-		if(email==null) {
+	public @ResponseBody Events processeditevent(@RequestParam Map<String,String> requestParams,HttpSession session) throws ParseException{
+		int userid=(int) session.getAttribute("userid");
+		/*if(userid==null) {
 			return "redirect:/login";
-		}
-		//System.out.println(event.getEventPkId());
-		//System.exit(0);
-		List<User> u=es.findemail(email);
-		User user=u.get(0);
+		}*/
+		DateFormat format = new SimpleDateFormat("yyyy-mm-dd HH:mm");
+		int eventPkId=Integer.parseInt(requestParams.get("eventPkId"));
+		Events event=es.findById(eventPkId);
+		event.setEventName(requestParams.get("eventName"));
+		event.setEventDescription(requestParams.get("eventDescription"));
+		//event.setEventDescription("blah");
+		event.setEventTime(format.parse(requestParams.get("eventTime")));
+		event.setOrganizer(requestParams.get("organizer"));
+		event.setPhoneNo(Integer.parseInt(requestParams.get("phoneNo")));
+		event.setPrice(Integer.parseInt(requestParams.get("price")));
+		event.setLatitude(requestParams.get("lat"));
+		event.setLongitude(requestParams.get("lon"));
+		event.setLocation(requestParams.get("formatted_address"));
+		//int id=Integer.parseInt(userid);
+		User user=es.findByUserId(userid);
+		/*List<User> u=es.findemail(email);
+		User user=u.get(0);*/
 		event.setUser(user);
 		es.save(event);
-		return "redirect:events";
+		
+		
+	
+		return event;
+		
 	}
 	
 	/*Deleting the event */
 	@RequestMapping(value="/deleteevent/{eventPkId}", method=RequestMethod.GET)
 	public @ResponseBody Events deleteevent(@PathVariable(value="eventPkId")int eventPkId) {
 		Events event=es.findById(eventPkId);
-		//es.delete(event);
+		es.delete(event);
+		File file=new File(ConstantConfiguration.PAGE_SIZE+event.getImage());
+		file.delete();
 		//return "redirect:/events";
+		
 		return event;
 	
 	}

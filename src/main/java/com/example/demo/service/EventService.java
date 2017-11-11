@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.config.ConstantConfiguration;
 import com.example.demo.entity.Events;
 import com.example.demo.entity.User;
 import com.example.demo.repository.EventsHib;
@@ -31,9 +32,9 @@ import com.example.demo.repository.UserHib;
 
 @Repository
 @Transactional
-public class EventService<CustomObject> {
+public class EventService {
 
-	final String IMAGE_PATH="src/main/webapp/assets/images/";
+	
 	
 	@Autowired
 	ServletContext context;
@@ -68,6 +69,11 @@ public class EventService<CustomObject> {
 	public List<User> findtoken(String token) {
 		List<User> list = uh.findByToken(token);
 		return list;
+	}
+	
+	public int finduserPkId(String email) {
+		int id=uh.finduserPkIdByEmail(email);
+		return id;
 	}
 	
 	public User findFirstUser(String email) {
@@ -107,6 +113,11 @@ public class EventService<CustomObject> {
 		return count;
 	}
 	
+	public User findByUserId(int userid) {
+		User user = uh.findByuserPkId(userid);
+		return user;
+	}
+	
 	public void delete(Events event) {
 		eh.delete(event);
 	}
@@ -115,6 +126,17 @@ public class EventService<CustomObject> {
 		List<Events> events = eh.findByUser(user,pageRequest);
 		return events;
 	}
+	
+	public List<Events> search(User user,String searchitem,PageRequest pageRequest){
+		List<Events> events=eh.findByUserAndEventNameStartingWith(user,searchitem, pageRequest);
+		return events;
+	}
+	
+	public int eventcountforSearch(User user,String searchitem) {
+		int val=eh.CountforSearch(user, searchitem);
+		return val;
+	}
+	
 	public Events findById(int eventPkId) {
 		Events e=eh.findFirstByEventPkId(eventPkId);
 		return e;
@@ -141,7 +163,7 @@ public class EventService<CustomObject> {
 	public void copyfile(Part file,String filename) throws IOException {
 		InputStream filecontent=file.getInputStream();
 		
-		File newfile=new File(IMAGE_PATH+filename);
+		File newfile=new File(ConstantConfiguration.IMAGE_PATH+filename);
 		newfile.createNewFile();
 		OutputStream outputStream =new FileOutputStream(newfile);
 		   int read = 0;  

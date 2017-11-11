@@ -8,7 +8,7 @@
                     </section>
                     <!--end page-title-->
                     <section>
-                        <form:form class="form inputs-underline" modelAttribute="user" action="/processregister" onsubmit="return validateForm()">
+                        <form:form class="form inputs-underline" id="registerform" modelAttribute="user" action="/processregister" onsubmit="return validateForm()">
                             <div class="row">
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group">

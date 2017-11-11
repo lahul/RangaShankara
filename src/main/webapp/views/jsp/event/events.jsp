@@ -36,7 +36,7 @@
 						<section>
 							<div class="row">
 								<c:forEach items="${list}" var="item">
-									<div class="col-md-3 col-sm-6">
+									<div class="col-md-3 col-sm-6 event_${item.eventPkId}">
 										<div class="subject-list text-primary">
 
 											<a href="eventdetail/${item.eventPkId}"><img
@@ -85,7 +85,7 @@
 												<!--end contacts-->
 												<section class="social">
 													<a class="btn btn-danger btn-xs lmargin right active"
-														href="javascript:;" onclick="confirmDelete()" ><span
+														href="javascript:;" onclick="confirmDelete(${item.eventPkId})" ><span
 														class="glyphicon glyphicon-trash"></span>&nbsp&nbsp&nbsp
 														Delete</a> 
 														<a class="btn btn-primary btn-xs right active"

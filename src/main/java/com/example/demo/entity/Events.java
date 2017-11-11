@@ -32,6 +32,7 @@ public class Events {
 	private String eventName;
 	
 	
+	
 	/*@Column(name="event_time", columnDefinition="DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)*/
 	private Date eventTime;
@@ -61,6 +62,28 @@ public class Events {
 	@UpdateTimestamp
 	private Timestamp updateTime;*/
 	
+	public Events() {} 
+	
+	
+	
+	public Events(int eventPkId, String eventName, Date eventTime, Integer price, String organizer, String longitude,
+			String latitude, String location, String image, Integer phoneNo, int userPkId, String eventDescription) {
+		super();
+		this.eventPkId = eventPkId;
+		this.eventName = eventName;
+		this.eventTime = eventTime;
+		this.price = price;
+		this.organizer = organizer;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.location = location;
+		this.image = image;
+		this.phoneNo = phoneNo;
+		this.user = new User(userPkId);
+		this.eventDescription = eventDescription;
+	}
+
+
 
 	public User getUser() {
 		return user;
@@ -99,15 +122,6 @@ public class Events {
 	@Column(name="event_description")
 	private String eventDescription;
 	
-
-	
-	public Events() {} 
-	
-	public Events(String eventName, String eventDescription) {
-		this.eventName = eventName;
-		this.eventDescription = eventDescription;
-	}
-
 	public String getEventDescription() {
 		return eventDescription;
 	}
@@ -174,6 +188,16 @@ public class Events {
 
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "Events [eventPkId=" + eventPkId + ", eventName=" + eventName + ", eventTime=" + eventTime + ", price="
+				+ price + ", organizer=" + organizer + ", longitude=" + longitude + ", latitude=" + latitude
+				+ ", location=" + location + ", image=" + image + ", phoneNo=" + phoneNo + ", user=" + user
+				+ ", eventDescription=" + eventDescription + "]";
 	}
 
 	

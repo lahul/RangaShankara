@@ -47,12 +47,13 @@
 					<div class="form-group">
 						<label for="price">Phone Number</label>
 						<form:input type="text" class="form-control" path="phoneNo"
-							id="PhoneNo" name="PhoneNo" placeholder="Phone Number"></form:input>
+							id="phoneNo" name="PhoneNo" placeholder="Phone Number"></form:input>
 					</div>
 					<div class="form-group">
 						<div id="loc">
 							<input name="lat" id="lat" type="hidden" value=""> <input
-								name="lng" id="lon" type="hidden" value=""> <label for="Location">Location</label><input
+								name="lng" id="lon" type="hidden" value=""> 
+								<label for="Location">Location</label><input
 								id="my_input" name="formatted_address" type="text">
 							<div id="my_map" style="width:500px;height:500px"></div>
 						</div>
@@ -68,8 +69,8 @@
 						<label>Upload Image</label>
 						<div class="input-group">
 							<span class="input-group-btn"> <span
-								class="btn btn-default btn-file"> Browse… <input
-									type="file" id="imgInp">
+								class="btn btn-default btn-file"> Browse <input
+									type="file" id="imgInp" name="file">
 							</span>
 							</span> <input type="text" class="form-control" readonly>
 						</div>

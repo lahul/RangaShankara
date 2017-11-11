@@ -13,10 +13,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.entity.User;
 import com.example.demo.service.EmailService;
@@ -53,7 +54,7 @@ public class UserController {
 	@RequestMapping("/signout")
 	public String logout(HttpServletRequest request, HttpSession session) {
 		session = request.getSession(false);
-		if (session.getAttribute("email") == null) {
+		if (session.getAttribute("userid") == null) {
 			return "redirect:/login";
 		}
 		session.invalidate();
@@ -70,18 +71,24 @@ public class UserController {
 		return "register";
 	}
 
-	@RequestMapping("processregister")
-	public String processRegister(@ModelAttribute(value = "user") User user, HttpServletRequest request) {
-		String cpassword = request.getParameter("cpassword");
+	@RequestMapping("/processregister")
+	public @ResponseBody User processRegister(@RequestParam Map<String,String> requestParams ,HttpServletRequest request) {
+		String cpassword = requestParams.get("cpassword");
+		String password=requestParams.get("password");
+		User user=new User();
+		user.setFirst_name(requestParams.get("first_name"));
+		user.setLast_name(requestParams.get("last_name"));
+		user.setEmail(requestParams.get("email"));
+		user.setPhoneNo(requestParams.get("phoneNo"));
 		//System.out.println(cpassword);
 		//System.out.println(user.getPassword());
-		if (cpassword.equals(user.getPassword())) {
-			user.setPassword(bcrypt.encode(user.getPassword()));
+		if (cpassword.equals(password)) {
+			user.setPassword(bcrypt.encode(password));
 		} else {
-			return "redirect:/register";
+			return user;
 		}
 		es.save(user);
-		return "redirect:/login";
+		return user;
 	}
 
 	/*Mapping for the login page */
@@ -95,23 +102,25 @@ public class UserController {
 		return "login";
 	}
 
-	@RequestMapping("processsignin")
-	public String processSignin(HttpServletRequest request, HttpSession session) {
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
+	@RequestMapping("/processsignin")
+	public @ResponseBody User processSignin(@RequestParam Map<String,String> requestParams,HttpServletRequest request, HttpSession session) {
+		String email = requestParams.get("email");
+		String password = requestParams.get("password");
 		List<User> list = es.findemail(email);
-		if (list.isEmpty())
-			return "redirect:/signin";
+		User user=es.findFirstUser(email);
+		if (list.isEmpty());
+			//return "redirect:/signin";
 		else {
 			if (bcrypt.matches(password, list.get(0).getPassword())) {
 				session = request.getSession();
 				session.setAttribute("email", email);
-				User user=es.findFirstUser(email);
+				
 				session.setAttribute("userid", user.getUserPkId());
-				return "redirect:/";
-			} else
-				return "register";
+				return user;
+			}/* else
+				return user;*/
 		}
+		return user;
 	}
 
 	/*Displays reset password page that asks for reset email */

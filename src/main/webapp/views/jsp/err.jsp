@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
         <div class="container">
             <ol class="breadcrumb">
                 <li><a href="#">Home</a></li>
@@ -15,6 +16,7 @@
                 <div class="col-md-4 col-sm-4 col-md-offset-4 col-sm-offset-4">
                     <form class="form inputs-underline">
                         <div class="input-group">
+                        <c:if test="${not empty message}"><h1>Not Empty</h1></c:if>
                             <input type="text" class="form-control" name="search_keyword" placeholder="Search keyword">
                                 <span class="input-group-btn">
                                     <button class="btn" type="submit"><i class="arrow_right"></i></button>

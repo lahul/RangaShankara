@@ -28,7 +28,7 @@ public interface EventsHib extends CrudRepository<Events, String>{
 	/*@Query("Select e from Events e join e.user u")
 	public List<Object> findEvents();*/
 	
-	@Query(value="select * from user u inner join Events e on u.user_pk_id=e.user_fk_id",nativeQuery=true)
+	@Query(value="select e from Events e")
 	public List<Events> join();
 	/*
 	@Query("Select e.user from Events e where e.eventName=:event")
@@ -45,4 +45,9 @@ public interface EventsHib extends CrudRepository<Events, String>{
 	public List<Events> findByUser(User user,Pageable pageable);
 	
 	public Events findFirstByEventPkId(int eventPkId);
+	
+	public List<Events> findByUserAndEventNameStartingWith(User user,String searchitem,Pageable pageable);
+	
+	@Query(value="select count(e) from Events e where e.user=:user and e.eventName like CONCAT('%',:searchitem,'%')")
+	public int CountforSearch(@Param(value="user")User user,@Param(value="searchitem")String searchitem);
 }

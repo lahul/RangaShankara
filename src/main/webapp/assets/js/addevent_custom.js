@@ -43,3 +43,4 @@ function myMap() {
 	};
 	var map=new google.maps.Map(document.getElementById("my_map"),mapProp);
 	}
+

@@ -20,7 +20,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class User {
 
 	@Id
-	private int user_pk_id;
+	private int userPkId;
 	
 	private String first_name;
 	
@@ -50,11 +50,14 @@ public class User {
 	@UpdateTimestamp
 	private Timestamp updateTime;
 	
-	
-	public int getUser_pk_id() {
-		return user_pk_id;
+	public User() {
+		
 	}
 	
+	public User(int userPkId) {
+		this.userPkId=userPkId;
+	}
+
 	public String getToken() {
 		return token;
 	}
@@ -79,8 +82,14 @@ public class User {
 		this.last_name = last_name;
 	}
 
-	public int getUser_id() {
-		return user_pk_id;
+
+
+	public int getUserPkId() {
+		return userPkId;
+	}
+
+	public void setUserPkId(int userPkId) {
+		this.userPkId = userPkId;
 	}
 
 	public String getPassword() {
